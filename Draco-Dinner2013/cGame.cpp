@@ -86,7 +86,7 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	theFontMgr->addFont(fontList[2], fontsToUse[0], 22);
 	theFontMgr->addFont(fontList[3], fontsToUse[2], 50);
 	
-	gameTextList = { "Draco Dinner", "Score : ", "Menu", "Use the arrow keys to move you dragon left and right to collect the food falling from the sky!", "Dont let the food reach the ground or its game over!", "Instructions", "Game Over","Do you want to save your score?" };
+	gameTextList = { "Draco Dinner", "Score : ", "Menu", "Use the arrow keys to move you dragon left and right to collect the food falling from the sky!", "Dont let the food reach the ground or its game over!", "Instructions", "Game Over", "Do you want to save your score?", "Score Table" };
 
 	//Assigning Fonts to the Desired text
 	theTextureMgr->addTexture("Title", theFontMgr->getFont("fantasy2")->createTextTexture(theRenderer, gameTextList[0], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
@@ -97,10 +97,11 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	theTextureMgr->addTexture("Instructions_title", theFontMgr->getFont("fantasy1")->createTextTexture(theRenderer, gameTextList[5], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("Game_Over", theFontMgr->getFont("fantasy2")->createTextTexture(theRenderer, gameTextList[6], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("Save_Question", theFontMgr->getFont("fantasy1_small")->createTextTexture(theRenderer, gameTextList[7], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
+	theTextureMgr->addTexture("High_scores", theFontMgr->getFont("fantasy1")->createTextTexture(theRenderer, gameTextList[8], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
 
 	// Store the Buttons
-	btnNameList = { "exit_btn", "instructions_btn", "load_btn", "menu_btn", "play_btn", "save_btn", "settings_btn" };
-	btnTexturesToUse = { "Images/Buttons/button_exit.png", "Images/Buttons/button_instructions.png", "Images/Buttons/button_load.png", "Images/Buttons/button_menu.png", "Images/Buttons/button_play.png", "Images/Buttons/button_save.png", "Images/Buttons/button_settings.png" };
+	btnNameList = { "exit_btn", "instructions_btn", "load_btn", "menu_btn", "play_btn", "save_btn", "High_score_btn" };
+	btnTexturesToUse = { "Images/Buttons/button_exit.png", "Images/Buttons/button_instructions.png", "Images/Buttons/button_load.png", "Images/Buttons/button_menu.png", "Images/Buttons/button_play.png", "Images/Buttons/button_save.png", "Images/Buttons/high_score.png" };
 	btnPos = { { 400, 375 }, { 400, 300 }, { 400, 300 }, { 500, 500 }, { 400, 300 }, { 740, 500 }, { 400, 300 } };
 	for (int bCount = 0; bCount < btnNameList.size(); bCount++)
 	{
@@ -142,7 +143,6 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	// Create vector array for spawning food
 	srand( time(NULL));
 	float spawnPointX[] = { 100, 250, 300, 350, 450, 640, 700 };
-	float spawnPointY[] = { 40, 40, 40, 40, 40, 40, 40 };
 	int randomInt = rand() % 7;
 
 	
@@ -150,7 +150,7 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		{
 			theCollectables.push_back(new cCollectable);
 			randomInt = rand() % 7;
-			theCollectables[food]->setSpritePos({ spawnPointX[randomInt], spawnPointY[randomInt] });
+			theCollectables[food]->setSpritePos({ spawnPointX[randomInt], 40 });
 			theCollectables[food]->setSpriteTranslation({ (rand() % 8 + 1), (rand() % 8 + 1) });
 			int randFood = rand() % 4;
 			theCollectables[food]->setTexture(theTextureMgr->getTexture(textureName[randFood]));
@@ -208,10 +208,12 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		// Render Buttons
 		theButtonMgr->getBtn("play_btn")->render(theRenderer, &theButtonMgr->getBtn("play_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("play_btn")->getSpritePos(), theButtonMgr->getBtn("play_btn")->getSpriteScale());
 		theButtonMgr->getBtn("play_btn")->setSpritePos({ 450, 200 });
+		theButtonMgr->getBtn("High_score_btn")->render(theRenderer, &theButtonMgr->getBtn("High_score_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("High_score_btn")->getSpritePos(), theButtonMgr->getBtn("High_score_btn")->getSpriteScale());
+		theButtonMgr->getBtn("High_score_btn")->setSpritePos({ 420, 300 });
 		theButtonMgr->getBtn("instructions_btn")->render(theRenderer, &theButtonMgr->getBtn("instructions_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("instructions_btn")->getSpritePos(), theButtonMgr->getBtn("instructions_btn")->getSpriteScale());
-		theButtonMgr->getBtn("instructions_btn")->setSpritePos({ 410, 275 });
+		theButtonMgr->getBtn("instructions_btn")->setSpritePos({410, 250 });
 		theButtonMgr->getBtn("exit_btn")->render(theRenderer, &theButtonMgr->getBtn("exit_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("exit_btn")->getSpritePos(), theButtonMgr->getBtn("exit_btn")->getSpriteScale());
-		theButtonMgr->getBtn("exit_btn")->setSpritePos({ 450, 400 });
+		theButtonMgr->getBtn("exit_btn")->setSpritePos({ 450, 450 });
 	}
 	break;
 
@@ -258,12 +260,35 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		//render Buttons
 		theButtonMgr->getBtn("play_btn")->render(theRenderer, &theButtonMgr->getBtn("play_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("play_btn")->getSpritePos(), theButtonMgr->getBtn("play_btn")->getSpriteScale());
 		theButtonMgr->getBtn("play_btn")->setSpritePos({ 450, 200 });
-		theButtonMgr->getBtn("menu_btn")->setSpritePos({ 450, 250});
+		theButtonMgr->getBtn("menu_btn")->setSpritePos({ 450, 550});
 		theButtonMgr->getBtn("menu_btn")->render(theRenderer, &theButtonMgr->getBtn("menu_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("menu_btn")->getSpritePos(), theButtonMgr->getBtn("menu_btn")->getSpriteScale());
 
 
 	}
 	break;
+
+	case HIGHSCORE:
+	{
+		//render the background
+		spriteBkgd.render(theRenderer, NULL, NULL, spriteBkgd.getSpriteScale());
+
+		// Render the Title
+		cTexture* tempTextTexture = theTextureMgr->getTexture("Title");
+		SDL_Rect pos = { 20, 20, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
+		FPoint scale = { 1, 1 };
+		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
+
+		//Render the highscore Title
+		cTexture* tempTextTexture4 = theTextureMgr->getTexture("High_scores");
+		SDL_Rect pos4 = { 20, 120, tempTextTexture4->getTextureRect().w, tempTextTexture4->getTextureRect().h };
+		FPoint scale4 = { 1, 1 };
+		tempTextTexture4->renderTexture(theRenderer, tempTextTexture4->getTexture(), &tempTextTexture4->getTextureRect(), &pos4, scale4);
+
+		//Render the Menu Button
+		theButtonMgr->getBtn("menu_btn")->setSpritePos({ 450, 500 });
+		theButtonMgr->getBtn("menu_btn")->render(theRenderer, &theButtonMgr->getBtn("menu_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("menu_btn")->getSpritePos(), theButtonMgr->getBtn("menu_btn")->getSpriteScale());
+
+	}
 
 	case PLAYING:
 	{
@@ -359,7 +384,7 @@ void cGame::update()
 
 void cGame::update(double deltaTime)
 {
-	// CHeck Button clicked and change state
+	// Check Button clicked and change state
 	if (theGameState == MENU || theGameState == LOSE)
 		{
 			theGameState = theButtonMgr->getBtn("exit_btn")->update(theGameState, QUIT, theAreaClicked);
@@ -371,6 +396,7 @@ void cGame::update(double deltaTime)
 	theGameState = theButtonMgr->getBtn("play_btn")->update(theGameState, PLAYING, theAreaClicked);
 	theGameState = theButtonMgr->getBtn("menu_btn")->update(theGameState, MENU, theAreaClicked);
 	theGameState = theButtonMgr->getBtn("instructions_btn")->update(theGameState, INSTRUCTIONS, theAreaClicked);
+	theGameState = theButtonMgr->getBtn("High_score_btn")->update(theGameState, HIGHSCORE, theAreaClicked);
 
 	// Update the visibility and position of each collectable if the game state is the playing gamestate
 	if (theGameState == PLAYING)
@@ -400,20 +426,23 @@ void cGame::update(double deltaTime)
 			if ((*collectableIterator)->collidedWith(&(*collectableIterator)->getBoundingRect(), &theDragon.getBoundingRect()))
 			{
 				// if a collision set the collectables to false
-				(*collectableIterator)->setActive(false);
+				/*(*collectableIterator)->setActive(false);*/
+				(*collectableIterator)->setSpritePos({ rand() % 1000, 40 });
 				theSoundMgr->getSnd("bite")->play(0);
+				
+				//the old score is deleted and gets replaced by the new one in the vector.
 				score += 10;
 				scoreStr = gameTextList[1] + to_string(score);
-				//the old score is deleted and gets replaced by the new one in the vector.
 				theTextureMgr->deleteTexture("Score");
 			}
-			//if ((*collectableIterator)->getSpritePos().y == 800)
-			//{
-			//	/*(*collectableIterator)->setActive(false);
-			//	theSoundMgr->getSnd("death")->play(0);*/
-			//	/*theGameState = LOSE;*/
-			//}
+			if ((*collectableIterator)->getSpritePos().y >= 800)
+			{
+				(*collectableIterator)->setActive(false);
+				theSoundMgr->getSnd("death")->play(0);
+				theGameState = LOSE;
+			}
 		}
+		
 		// Update the Dragons position
 		theDragon.update(deltaTime);
 	}
