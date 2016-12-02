@@ -48,6 +48,7 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	theTextureMgr->setRenderer(theRenderer);
 	theFontMgr->initFontLib();
 	theSoundMgr->initMixer();
+	score = 0;
 
 	// Set filename
 	theFile.setFileName("Data/newHighScore.dat");
@@ -64,7 +65,7 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	}
 
 	theAreaClicked = { 0, 0 };
-	score = 0;
+	
 
 	// Store the textures
 	textureName = { "meat1", "meat2", "veg1", "veg2", "Egg", "theDragon", "theBackground", "left_buttonsprite", "right_buttonsprite" };
@@ -73,30 +74,29 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	{
 		theTextureMgr->addTexture(textureName[tCount], texturesToUse[tCount]);
 	}
+    score = 0;
+	/*scoreStr = gameTextList[1] + to_string(score);*/
 
 	// Create textures for Game Dialogue (text)
-	fontList = { "fantasy1", "fantasy2","fantasy1_small" };
-	fontsToUse = { "Fonts/Wizards Magic.ttf", "Fonts/A Gothique Time .ttf" };
+	fontList = { "fantasy1", "fantasy2","fantasy1_small","Hazel" };
+	fontsToUse = { "Fonts/Wizards Magic.ttf", "Fonts/A Gothique Time .ttf" ,"Fonts/hazel grace.ttf"};
 
 	theFontMgr->addFont(fontList[0], fontsToUse[0], 50);
-	theFontMgr->addFont(fontList[1], fontsToUse[1], 100);
+	theFontMgr->addFont(fontList[1], fontsToUse[1], 80);
 	theFontMgr->addFont(fontList[2], fontsToUse[0], 22);
+	theFontMgr->addFont(fontList[3], fontsToUse[2], 50);
 	
-	gameTextList = { "Draco Dinner", "", "Menu" ,"Use the arrow keys to move you dragon left and right to collect the food falling from the sky!","Dont let the food reach the ground or its game over!","Instructions","Game Over"};
+	gameTextList = { "Draco Dinner", "Score : ", "Menu", "Use the arrow keys to move you dragon left and right to collect the food falling from the sky!", "Dont let the food reach the ground or its game over!", "Instructions", "Game Over","Do you want to save your score?" };
 
 	//Assigning Fonts to the Desired text
 	theTextureMgr->addTexture("Title", theFontMgr->getFont("fantasy2")->createTextTexture(theRenderer, gameTextList[0], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
-	theTextureMgr->addTexture("Score", theFontMgr->getFont("fantasy2")->createTextTexture(theRenderer, gameTextList[1] , SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
+	theTextureMgr->addTexture("Score", theFontMgr->getFont("Hazel")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("Menu Title", theFontMgr->getFont("fantasy1")->createTextTexture(theRenderer, gameTextList[2], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("Instructions", theFontMgr->getFont("fantasy1_small")->createTextTexture(theRenderer, gameTextList[3], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("Instructions2", theFontMgr->getFont("fantasy1_small")->createTextTexture(theRenderer, gameTextList[4], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("Instructions_title", theFontMgr->getFont("fantasy1")->createTextTexture(theRenderer, gameTextList[5], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
-	theTextureMgr->addTexture("Game_Over", theFontMgr->getFont("fantasy1")->createTextTexture(theRenderer, gameTextList[6], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
-
-	//initialising the score
-	/*score = 0;
-	theTextureMgr->addTexture("Score", theFontMgr->getFont("fantasy1")->createTextTexture(theRenderer, scoreStr.c_str(), SOLID, { 0, 255, 0, 255 }, { 0, 0, 0, 0 }));*/
-
+	theTextureMgr->addTexture("Game_Over", theFontMgr->getFont("fantasy2")->createTextTexture(theRenderer, gameTextList[6], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
+	theTextureMgr->addTexture("Save_Question", theFontMgr->getFont("fantasy1_small")->createTextTexture(theRenderer, gameTextList[7], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
 
 	// Store the Buttons
 	btnNameList = { "exit_btn", "instructions_btn", "load_btn", "menu_btn", "play_btn", "save_btn", "settings_btn" };
@@ -133,7 +133,7 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	spriteBkgd.setSpriteDimensions(theTextureMgr->getTexture("theBackground")->getTWidth(), theTextureMgr->getTexture("theBackground")->getTHeight());
 
 	//Rendering the Dragon Character
-	theDragon.setSpritePos({ 370, 400});
+	theDragon.setSpritePos({ 370, 500});
 	theDragon.setTexture(theTextureMgr->getTexture("theDragon"));
 	theDragon.setSpriteDimensions(theTextureMgr->getTexture("theDragon")->getTWidth(), theTextureMgr->getTexture("theDragon")->getTHeight());
 	theDragon.setDragonVelocity({ 0, 0 });
@@ -286,11 +286,10 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		theButtonMgr->getBtn("exit_btn")->render(theRenderer, &theButtonMgr->getBtn("exit_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("exit_btn")->getSpritePos(), theButtonMgr->getBtn("exit_btn")->getSpriteScale());
 		
 		//Render the score
-		cTexture* tempTextTexture2 = theTextureMgr->getTexture("Score");
-		SDL_Rect pos2 = {20, 120, tempTextTexture2->getTextureRect().w, tempTextTexture2->getTextureRect().h };
-		FPoint scale2 = { 1, 1 };
-		tempTextTexture2->renderTexture(theRenderer, tempTextTexture2->getTexture(), &tempTextTexture2->getTextureRect(), &pos2, scale2);
-
+		theTextureMgr->addTexture("Score", theFontMgr->getFont("Hazel")->createTextTexture(theRenderer, scoreStr.c_str(), SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
+		tempTextTexture = theTextureMgr->getTexture("Score");
+		SDL_Rect pos2 = { 20, 120, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
+		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos2, scale);
 
 		// render the Dragon
 		theDragon.render(theRenderer, &theDragon.getSpriteDimensions(), &theDragon.getSpritePos(), theDragon.getSpriteRotAngle(), &theDragon.getSpriteCentre(), theDragon.getSpriteScale());
@@ -311,14 +310,27 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 
 		//Render the game over
 		cTexture* tempTextTexture2 = theTextureMgr->getTexture("Game_Over");
-		SDL_Rect pos2 = { 20, 120, tempTextTexture2->getTextureRect().w, tempTextTexture2->getTextureRect().h };
+		SDL_Rect pos2 = { 400, 150, tempTextTexture2->getTextureRect().w, tempTextTexture2->getTextureRect().h };
 		FPoint scale2 = { 1, 1 };
 		tempTextTexture2->renderTexture(theRenderer, tempTextTexture2->getTexture(), &tempTextTexture2->getTextureRect(), &pos2, scale2);
+
+		//Render the score
+		tempTextTexture = theTextureMgr->getTexture("Score");
+		SDL_Rect pos3 = { 450, 220, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
+		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos3, scale);
+
+		//render the question of if they want to save there score or not
+		tempTextTexture = theTextureMgr->getTexture("Save_Question");
+		 pos = { 320, 280, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
+		scale = { 1, 1 };
+		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
 		
 		//Render the Buttons
-		theButtonMgr->getBtn("menu_btn")->setSpritePos({ 500, 500 });
+		theButtonMgr->getBtn("save_btn")->setSpritePos({ 450, 350 });
+		theButtonMgr->getBtn("save_btn")->render(theRenderer, &theButtonMgr->getBtn("save_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("save_btn")->getSpritePos(), theButtonMgr->getBtn("save_btn")->getSpriteScale());
+		theButtonMgr->getBtn("menu_btn")->setSpritePos({ 450, 425 });
 		theButtonMgr->getBtn("menu_btn")->render(theRenderer, &theButtonMgr->getBtn("menu_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("menu_btn")->getSpritePos(), theButtonMgr->getBtn("menu_btn")->getSpriteScale());
-		theButtonMgr->getBtn("exit_btn")->setSpritePos({ 500, 575 });
+		theButtonMgr->getBtn("exit_btn")->setSpritePos({ 450, 500 });
 		theButtonMgr->getBtn("exit_btn")->render(theRenderer, &theButtonMgr->getBtn("exit_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("exit_btn")->getSpritePos(), theButtonMgr->getBtn("exit_btn")->getSpriteScale());
 	}
 	break;
@@ -390,21 +402,18 @@ void cGame::update(double deltaTime)
 				// if a collision set the collectables to false
 				(*collectableIterator)->setActive(false);
 				theSoundMgr->getSnd("bite")->play(0);
-				//this updates the score,  turns it into a string and concatenates it to the text in the gameTextList.
-				//score += 10;
-				//scoreStr = gameTextList[1] + to_string(score);
-				////the old score is deleted and gets replaced by the new one
-				//theTextureMgr->deleteTexture("Score");
+				score += 10;
+				scoreStr = gameTextList[1] + to_string(score);
+				//the old score is deleted and gets replaced by the new one in the vector.
+				theTextureMgr->deleteTexture("Score");
 			}
-			if ((*collectableIterator)->getSpriteTranslation().y == 800)
-			{
-				(*collectableIterator)->setActive(false);
-				theSoundMgr->getSnd("death")->play(0);
-				theGameState = LOSE;
-
-			}
+			//if ((*collectableIterator)->getSpritePos().y == 800)
+			//{
+			//	/*(*collectableIterator)->setActive(false);
+			//	theSoundMgr->getSnd("death")->play(0);*/
+			//	/*theGameState = LOSE;*/
+			//}
 		}
-
 		// Update the Dragons position
 		theDragon.update(deltaTime);
 	}
@@ -421,8 +430,6 @@ bool cGame::getInput(bool theLoop)
 			theLoop = false;
 		}
 
-		/*switch (event.type)
-		{*/
 		switch (event.type)
 		{
 		case SDL_MOUSEBUTTONDOWN:
@@ -449,6 +456,7 @@ bool cGame::getInput(bool theLoop)
 				break;
 			}
 			break;
+		
 
 			case SDLK_RIGHT:
 			{

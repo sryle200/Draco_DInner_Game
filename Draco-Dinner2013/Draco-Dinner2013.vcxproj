@@ -121,6 +121,9 @@ xcopy /Y "C:\Users\Sam\Documents\Year 2\Games Programming\SDL2\SDL2_mixer-2.0.1\
     <Image Include="Images\computer_key_Arrow_Left.png" />
     <Image Include="Images\computer_key_Arrow_Right.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="Fonts\Wizards Magic.ttf" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

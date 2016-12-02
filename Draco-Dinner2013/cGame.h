@@ -75,10 +75,13 @@ private:
 	SDL_Color aColour;
 	cTexture* tempTextTexture;
 	SDL_Point theAreaClicked;
+	//Game Score
 	int score;
+	string scoreStr;
+	//Files to access
 	cFileHandler theFile;
 	bool fileAvailable;
-	//string scoreStr;
+	
 };
 
 #endif

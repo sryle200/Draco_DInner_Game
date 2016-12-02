@@ -11,9 +11,9 @@ cAsteroid.h
 
 class cCollectable : public cSprite
 {
+		
 private:
 	SDL_Point collectableVelocity;
-
 public:
 	cCollectable();
 	void update(double deltaTime);		// Collectable update method

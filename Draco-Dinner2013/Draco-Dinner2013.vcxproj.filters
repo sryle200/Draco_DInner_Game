@@ -130,4 +130,7 @@
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="Fonts\Wizards Magic.ttf" />
+  </ItemGroup>
 </Project>
