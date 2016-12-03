@@ -124,6 +124,9 @@ xcopy /Y "C:\Users\Sam\Documents\Year 2\Games Programming\SDL2\SDL2_mixer-2.0.1\
   <ItemGroup>
     <Font Include="Fonts\Wizards Magic.ttf" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\newHightScore.dat" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

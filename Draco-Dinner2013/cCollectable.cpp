@@ -26,7 +26,7 @@ void cCollectable::update(double deltaTime)
 
 	SDL_Rect currentSpritePos = this->getSpritePos();
 	currentSpritePos.x += this->getSpriteTranslation().x * deltaTime;
-	currentSpritePos.y += this->getSpriteTranslation().y * 1 + deltaTime;
+	currentSpritePos.y += this->getSpriteTranslation().y * 1 + deltaTime - 0.5;
 
 	this->setSpritePos({ currentSpritePos.x, currentSpritePos.y });
 	cout << "Collectable position - x: " << this->getSpritePos().x << " y: " << this->getSpritePos().y << " deltaTime: " << deltaTime << endl;

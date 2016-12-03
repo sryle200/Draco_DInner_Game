@@ -18,6 +18,8 @@
 // Maths functions
 #include <math.h>
 #define PI 3.14159265
+// Using Files
+#include <fstream>
 
 // STL Container & Algorithms
 #include <vector>
@@ -42,7 +44,7 @@ typedef struct
 
 enum textType {SOLID, BLENDED, SHADED};
 enum soundType {SFX, MUSIC};
-enum gameState {QUIT, MENU, INSTRUCTIONS, PLAYING, HIGHSCORE, LOSE};
+enum gameState {QUIT, MENU, INSTRUCTIONS, PLAYING, HIGHSCORE, LOSE, SAVESCORE, };
 enum btnTypes {EXIT, END, PLAY, SAVE, SETTINGS };
 
 #endif

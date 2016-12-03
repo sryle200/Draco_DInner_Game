@@ -133,4 +133,7 @@
   <ItemGroup>
     <Font Include="Fonts\Wizards Magic.ttf" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\newHightScore.dat" />
+  </ItemGroup>
 </Project>
