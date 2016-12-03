@@ -57,12 +57,11 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	if (!theFile.openFile(ios::in)) //open file for input output
 	{
 		cout << "Could not open specified file '" << theFile.getFileName() << "'. Error " << SDL_GetError() << endl;
-		fileAvailable = false;
 	}
 	else
 	{
 		cout << "File '" << theFile.getFileName() << "' opened for input!" << endl;
-		fileAvailable = true;
+		theFile.closeFile();
 	}
 	
 
@@ -213,7 +212,7 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		theButtonMgr->getBtn("instructions_btn")->render(theRenderer, &theButtonMgr->getBtn("instructions_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("instructions_btn")->getSpritePos(), theButtonMgr->getBtn("instructions_btn")->getSpriteScale());
 		theButtonMgr->getBtn("instructions_btn")->setSpritePos({410, 250 });
 		theButtonMgr->getBtn("exit_btn")->render(theRenderer, &theButtonMgr->getBtn("exit_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("exit_btn")->getSpritePos(), theButtonMgr->getBtn("exit_btn")->getSpriteScale());
-		theButtonMgr->getBtn("exit_btn")->setSpritePos({ 450, 450 });
+		theButtonMgr->getBtn("exit_btn")->setSpritePos({ 700, 700 });
 	}
 	break;
 
@@ -284,10 +283,21 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		scale = { 1, 1 };
 		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
 
+		//open file to render score from
+		if (!theFile.openFile(ios::in))
+		{
+			cout << "Could not open specified file '" << theFile.getFileName() << "'. Error " << SDL_GetError() << endl;
+		}
+		else
+		{
+			highScore = theFile.readDataFromFile();
+			theFile.closeFile();
+		}
+
 		//Render the Previous scores from the file
-		theTextureMgr->addTexture("Highscore", theFontMgr->getFont("fantasy1_small")->createTextTexture(theRenderer, highScore.c_str(), SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
+		theTextureMgr->addTexture("Highscore", theFontMgr->getFont("Hazel")->createTextTexture(theRenderer, highScore.c_str(), SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
 		tempTextTexture = theTextureMgr->getTexture("Highscore");
-		SDL_Rect pos2 = { 20, 120, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
+		SDL_Rect pos2 = { 200, 300, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
 		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos2, scale);
 
 		//Render the Menu Button
@@ -358,9 +368,9 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		//Render the Buttons
 		theButtonMgr->getBtn("save_btn")->setSpritePos({ 450, 350 });
 		theButtonMgr->getBtn("save_btn")->render(theRenderer, &theButtonMgr->getBtn("save_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("save_btn")->getSpritePos(), theButtonMgr->getBtn("save_btn")->getSpriteScale());
-		theButtonMgr->getBtn("menu_btn")->setSpritePos({ 450, 425 });
+		theButtonMgr->getBtn("menu_btn")->setSpritePos({ 450, 450 });
 		theButtonMgr->getBtn("menu_btn")->render(theRenderer, &theButtonMgr->getBtn("menu_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("menu_btn")->getSpritePos(), theButtonMgr->getBtn("menu_btn")->getSpriteScale());
-		theButtonMgr->getBtn("exit_btn")->setSpritePos({ 450, 500 });
+		theButtonMgr->getBtn("exit_btn")->setSpritePos({ 450, 550 });
 		theButtonMgr->getBtn("exit_btn")->render(theRenderer, &theButtonMgr->getBtn("exit_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("exit_btn")->getSpritePos(), theButtonMgr->getBtn("exit_btn")->getSpriteScale());
 	}
 	break;
@@ -396,9 +406,9 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		//Render the Buttons
 		theButtonMgr->getBtn("save_btn")->setSpritePos({ 450, 350 });
 		theButtonMgr->getBtn("save_btn")->render(theRenderer, &theButtonMgr->getBtn("save_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("save_btn")->getSpritePos(), theButtonMgr->getBtn("save_btn")->getSpriteScale());
-		theButtonMgr->getBtn("menu_btn")->setSpritePos({ 450, 425 });
+		theButtonMgr->getBtn("menu_btn")->setSpritePos({ 450, 450 });
 		theButtonMgr->getBtn("menu_btn")->render(theRenderer, &theButtonMgr->getBtn("menu_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("menu_btn")->getSpritePos(), theButtonMgr->getBtn("menu_btn")->getSpriteScale());
-		theButtonMgr->getBtn("exit_btn")->setSpritePos({ 450, 500 });
+		theButtonMgr->getBtn("exit_btn")->setSpritePos({ 450, 550 });
 		theButtonMgr->getBtn("exit_btn")->render(theRenderer, &theButtonMgr->getBtn("exit_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("exit_btn")->getSpritePos(), theButtonMgr->getBtn("exit_btn")->getSpriteScale());
 	}
 	break;
@@ -513,31 +523,33 @@ void cGame::update(double deltaTime)
 	{
 		theGameState = theButtonMgr->getBtn("menu_btn")->update(theGameState, MENU, theAreaClicked);
 		theGameState = theButtonMgr->getBtn("exit_btn")->update(theGameState, QUIT, theAreaClicked);
-		if (theGameState == SAVESCORE && fileAvailable)
-		{
-			if (!theFile.openFile(ios::in))
+		if (!theFile.openFile(ios::app))
 			{
 				cout << "Could not open specified file '" << theFile.getFileName() << "'. Error " << SDL_GetError() << endl;
 			}
 			else
 			{
-				theFile.writeDataToFile(scoreStr);
+				theFile.writeDataToFile(scoreStr + "   \n");
+				theFile.closeFile();
+				theGameState = LOSE;
+				theAreaClicked = { 0, 0 };
 			}
-		}
 	}
 	break;
 
 	case HIGHSCORE:
 	{
 		theGameState = theButtonMgr->getBtn("menu_btn")->update(theGameState, MENU, theAreaClicked);
-		if (!theFile.openFile(ios::out))
+		if (!theFile.openFile(ios::in))
 		{
 			cout << "Could not open specified file '" << theFile.getFileName() << "'. Error " << SDL_GetError() << endl;
 		}
 		else
 		{
 			highScore = theFile.readDataFromFile();
+			theFile.closeFile();
 		}
+		theTextureMgr->deleteTexture("Highscore");
 	}
 	break;
 
