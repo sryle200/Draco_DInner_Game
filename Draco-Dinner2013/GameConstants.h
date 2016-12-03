@@ -44,7 +44,7 @@ typedef struct
 
 enum textType {SOLID, BLENDED, SHADED};
 enum soundType {SFX, MUSIC};
-enum gameState {QUIT, MENU, INSTRUCTIONS, PLAYING, HIGHSCORE, LOSE, SAVESCORE, };
+enum gameState {QUIT, MENU, INSTRUCTIONS, PLAYING, HIGHSCORE, LOSE, SAVESCORE,RESTARTING };
 enum btnTypes {EXIT, END, PLAY, SAVE, SETTINGS };
 
 #endif

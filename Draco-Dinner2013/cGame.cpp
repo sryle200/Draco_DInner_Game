@@ -144,7 +144,7 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	int randomInt;
 
 	
-		for (int food = 0; food < 5; food++)
+		for (int food = 0; food < 2; food++)
 		{
 			theCollectables.push_back(new cCollectable);
 			randomInt = rand() % 1000;
@@ -322,10 +322,6 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		SDL_Rect pos = { 20, 20, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
 		FPoint scale = { 1, 1 };
 		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
-
-		// Render Buttons
-		theButtonMgr->getBtn("exit_btn")->setSpritePos({ 700, 700 });
-		theButtonMgr->getBtn("exit_btn")->render(theRenderer, &theButtonMgr->getBtn("exit_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("exit_btn")->getSpritePos(), theButtonMgr->getBtn("exit_btn")->getSpriteScale());
 		
 		//Render the score
 		theTextureMgr->addTexture("Score", theFontMgr->getFont("Hazel")->createTextTexture(theRenderer, scoreStr.c_str(), SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
@@ -336,42 +332,6 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		// render the Dragon
 		theDragon.render(theRenderer, &theDragon.getSpriteDimensions(), &theDragon.getSpritePos(), theDragon.getSpriteRotAngle(), &theDragon.getSpriteCentre(), theDragon.getSpriteScale());
 
-	}
-	break;
-
-	case SAVESCORE:
-	{
-		spriteBkgd.render(theRenderer, NULL, NULL, spriteBkgd.getSpriteScale());
-		// Render the Title
-		cTexture* tempTextTexture = theTextureMgr->getTexture("Title");
-		SDL_Rect pos = { 20, 20, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
-		FPoint scale = { 1, 1 };
-		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
-
-		//Render the game over
-		cTexture* tempTextTexture2 = theTextureMgr->getTexture("Game_Over");
-		SDL_Rect pos2 = { 400, 150, tempTextTexture2->getTextureRect().w, tempTextTexture2->getTextureRect().h };
-		FPoint scale2 = { 1, 1 };
-		tempTextTexture2->renderTexture(theRenderer, tempTextTexture2->getTexture(), &tempTextTexture2->getTextureRect(), &pos2, scale2);
-
-		//Render the score
-		tempTextTexture = theTextureMgr->getTexture("Score");
-		SDL_Rect pos3 = { 450, 220, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
-		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos3, scale);
-
-		//render the question of if they want to save there score or not
-		tempTextTexture = theTextureMgr->getTexture("Saved");
-		pos = { 320, 280, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
-		scale = { 1, 1 };
-		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
-
-		//Render the Buttons
-		theButtonMgr->getBtn("save_btn")->setSpritePos({ 450, 350 });
-		theButtonMgr->getBtn("save_btn")->render(theRenderer, &theButtonMgr->getBtn("save_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("save_btn")->getSpritePos(), theButtonMgr->getBtn("save_btn")->getSpriteScale());
-		theButtonMgr->getBtn("menu_btn")->setSpritePos({ 450, 450 });
-		theButtonMgr->getBtn("menu_btn")->render(theRenderer, &theButtonMgr->getBtn("menu_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("menu_btn")->getSpritePos(), theButtonMgr->getBtn("menu_btn")->getSpriteScale());
-		theButtonMgr->getBtn("exit_btn")->setSpritePos({ 450, 550 });
-		theButtonMgr->getBtn("exit_btn")->render(theRenderer, &theButtonMgr->getBtn("exit_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("exit_btn")->getSpritePos(), theButtonMgr->getBtn("exit_btn")->getSpriteScale());
 	}
 	break;
 
@@ -408,7 +368,9 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		theButtonMgr->getBtn("save_btn")->render(theRenderer, &theButtonMgr->getBtn("save_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("save_btn")->getSpritePos(), theButtonMgr->getBtn("save_btn")->getSpriteScale());
 		theButtonMgr->getBtn("menu_btn")->setSpritePos({ 450, 450 });
 		theButtonMgr->getBtn("menu_btn")->render(theRenderer, &theButtonMgr->getBtn("menu_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("menu_btn")->getSpritePos(), theButtonMgr->getBtn("menu_btn")->getSpriteScale());
-		theButtonMgr->getBtn("exit_btn")->setSpritePos({ 450, 550 });
+		theButtonMgr->getBtn("play_btn")->render(theRenderer, &theButtonMgr->getBtn("play_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("play_btn")->getSpritePos(), theButtonMgr->getBtn("play_btn")->getSpriteScale());
+		theButtonMgr->getBtn("play_btn")->setSpritePos({ 450, 550 });
+		theButtonMgr->getBtn("exit_btn")->setSpritePos({ 700, 700 });
 		theButtonMgr->getBtn("exit_btn")->render(theRenderer, &theButtonMgr->getBtn("exit_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("exit_btn")->getSpritePos(), theButtonMgr->getBtn("exit_btn")->getSpriteScale());
 	}
 	break;
@@ -443,18 +405,16 @@ void cGame::update(double deltaTime)
 		// Check Button clicked and change state
 		/*if (theGameState == MENU || theGameState == LOSE)*/
 		{
-			score = 0;
 			theGameState = theButtonMgr->getBtn("exit_btn")->update(theGameState, QUIT, theAreaClicked);
-			theGameState = theButtonMgr->getBtn("play_btn")->update(theGameState, PLAYING, theAreaClicked);
+			theGameState = theButtonMgr->getBtn("play_btn")->update(theGameState, RESTARTING, theAreaClicked);
 			theGameState = theButtonMgr->getBtn("instructions_btn")->update(theGameState, INSTRUCTIONS, theAreaClicked);
 			theGameState = theButtonMgr->getBtn("High_score_btn")->update(theGameState, HIGHSCORE, theAreaClicked);
-			
 		}
 		break;
 
 	case INSTRUCTIONS:
 	{
-		theGameState = theButtonMgr->getBtn("play_btn")->update(theGameState, PLAYING, theAreaClicked);
+		theGameState = theButtonMgr->getBtn("play_btn")->update(theGameState, RESTARTING, theAreaClicked);
 		theGameState = theButtonMgr->getBtn("menu_btn")->update(theGameState, MENU, theAreaClicked);
 	}
 	break;
@@ -487,8 +447,7 @@ void cGame::update(double deltaTime)
 			{
 				if ((*collectableIterator)->collidedWith(&(*collectableIterator)->getBoundingRect(), &theDragon.getBoundingRect()))
 				{
-					// if a collision set the collectables to false
-					/*(*collectableIterator)->setActive(false);*/
+					// if a collision is detected reset the collectables position
 					(*collectableIterator)->setSpritePos({ rand() % 1000, 40 });
 					theSoundMgr->getSnd("bite")->play(0);
 
@@ -507,22 +466,46 @@ void cGame::update(double deltaTime)
 
 			// Update the Dragons position
 			theDragon.update(deltaTime);
-		
 	}
 		break;
+
 	case LOSE:
 		{
 			theGameState = theButtonMgr->getBtn("menu_btn")->update(theGameState, MENU, theAreaClicked);
 			theGameState = theButtonMgr->getBtn("exit_btn")->update(theGameState, QUIT, theAreaClicked);
 			theGameState = theButtonMgr->getBtn("save_btn")->update(theGameState, SAVESCORE, theAreaClicked);
-		
+			theGameState = theButtonMgr->getBtn("play_btn")->update(theGameState, RESTARTING, theAreaClicked);
 		}
 		break;
 
+	case RESTARTING:
+	{
+		theAreaClicked = { 0, 0 };
+		score = 0;
+		scoreStr = gameTextList[1] + to_string(score);
+		theTextureMgr->deleteTexture("Score");
+
+		/*srand(time(NULL));
+		int randomInt;
+		for (int food = 0; food < 2; food++)
+		{
+			theCollectables.push_back(new cCollectable);
+			randomInt = rand() % 1000;
+			theCollectables[food]->setSpritePos({ randomInt, 40 });
+			theCollectables[food]->setSpriteTranslation({ (rand() % 8 + 1), (rand() % 8 + 1) });
+			int randFood = rand() % 4;
+			theCollectables[food]->setTexture(theTextureMgr->getTexture(textureName[randFood]));
+			theCollectables[food]->setSpriteDimensions(theTextureMgr->getTexture(textureName[randFood])->getTWidth(), theTextureMgr->getTexture(textureName[randFood])->getTHeight());
+			theCollectables[food]->setCollectableVelocity({ 3.0f, 3.0f });
+			theCollectables[food]->setActive(true);
+		}*/
+
+		theGameState = PLAYING;
+	}
+	break;
+
 	case SAVESCORE:
 	{
-		theGameState = theButtonMgr->getBtn("menu_btn")->update(theGameState, MENU, theAreaClicked);
-		theGameState = theButtonMgr->getBtn("exit_btn")->update(theGameState, QUIT, theAreaClicked);
 		if (!theFile.openFile(ios::app))
 			{
 				cout << "Could not open specified file '" << theFile.getFileName() << "'. Error " << SDL_GetError() << endl;
