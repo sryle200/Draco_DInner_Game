@@ -139,23 +139,8 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	theDragon.setDragonVelocity({ 0, 0 });
 	
 
-	// Create vector array for spawning food
+	// Seed the Random number generator for when it is used later
 	srand( time(NULL));
-	int randomInt;
-
-	
-		for (int food = 0; food < 2; food++)
-		{
-			theCollectables.push_back(new cCollectable);
-			randomInt = rand() % 1000;
-			theCollectables[food]->setSpritePos({ randomInt, 40 });
-			theCollectables[food]->setSpriteTranslation({ (rand() % 8 + 1), (rand() % 8 + 1) });
-			int randFood = rand() % 4;
-			theCollectables[food]->setTexture(theTextureMgr->getTexture(textureName[randFood]));
-			theCollectables[food]->setSpriteDimensions(theTextureMgr->getTexture(textureName[randFood])->getTWidth(), theTextureMgr->getTexture(textureName[randFood])->getTHeight());
-			theCollectables[food]->setCollectableVelocity({ 3.0f, 3.0f });
-			theCollectables[food]->setActive(true);
-		}
 	
 }
 	
@@ -484,8 +469,14 @@ void cGame::update(double deltaTime)
 		score = 0;
 		scoreStr = gameTextList[1] + to_string(score);
 		theTextureMgr->deleteTexture("Score");
+		theDragon.setSpritePos({ 370, 500 });
 
-		/*srand(time(NULL));
+		if (theCollectables.size() > 0)
+		{
+			theCollectables.clear();
+		}
+
+		srand(time(NULL));
 		int randomInt;
 		for (int food = 0; food < 2; food++)
 		{
@@ -498,7 +489,7 @@ void cGame::update(double deltaTime)
 			theCollectables[food]->setSpriteDimensions(theTextureMgr->getTexture(textureName[randFood])->getTWidth(), theTextureMgr->getTexture(textureName[randFood])->getTHeight());
 			theCollectables[food]->setCollectableVelocity({ 3.0f, 3.0f });
 			theCollectables[food]->setActive(true);
-		}*/
+		}
 
 		theGameState = PLAYING;
 	}
