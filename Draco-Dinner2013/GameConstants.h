@@ -17,6 +17,7 @@
 #include <SDL_mixer.h>
 // Maths functions
 #include <math.h>
+#include <cmath>
 #define PI 3.14159265
 // Using Files
 #include <fstream>

@@ -14,7 +14,6 @@ cSprite.cpp
 */
 cSprite::cSprite() 			// Default constructor
 {
-
 	this->spritePos_2D = { 0, 0, 0, 0 };
 	this->spriteTexture = NULL;
 	this->spriteCentre = {0, 0};
@@ -291,6 +290,54 @@ bool cSprite::SphereSphereCollision(SDL_Point spritePosition, float spriteRadius
 	}
 	return false; // No Collision
 }
+
+//SDL_Rect cSprite::NormaliseBounds(const SDL_Rect & rect)
+//{
+//	SDL_Rect normalised;
+//	normalised.x = rect.x - getSpritePos()
+//	normalised.y = rect.y
+//	normalised.w = rect.w;
+//	normalised.h = rect.h
+//
+//
+//}
+
+/*
+==================================
+For Pixel by pixel collision detection
+======================================
+*/
+//return the amount that the objects collide by
+SDL_Rect cSprite::intersection(const SDL_Rect dimentionsA, const SDL_Rect dimentionsB)
+{
+	int X1 = max(dimentionsA.x, dimentionsB.x);
+	int Y1 = max(dimentionsA.y, dimentionsB.y);
+	int X2 = min(dimentionsA.x + dimentionsA.w, dimentionsB.x + dimentionsB.w);
+	int Y2 = min(dimentionsA.y + dimentionsA.h, dimentionsB.y + dimentionsB.h);
+
+	int width = X2 - X1;
+	int height = Y2 - Y1;
+
+	if (width > 0 && height > 0)
+	{
+		SDL_Rect intersect = { X1, Y1, width, height };
+		return intersect;
+	}
+	else
+	{
+		SDL_Rect intersect = { 0, 0, 0, 0 };
+		return intersect;
+	}
+
+}
+
+
+//Are pixels coloured
+//bool cSprite::getAlphaMap(cSprite* thisSprite, int x, int y)
+//{
+//
+//	int bpp = thisSprite->surface
+//}
 
 float cSprite::lengthSQRD(SDL_Point theLength)
 {

@@ -441,6 +441,7 @@ void cGame::update(double deltaTime)
 					scoreStr = gameTextList[1] + to_string(score);
 					theTextureMgr->deleteTexture("Score");
 				}
+				// if the collectable touches the floor the game ends
 				if ((*collectableIterator)->getSpritePos().y >= 720)
 				{
 					(*collectableIterator)->setActive(false);
