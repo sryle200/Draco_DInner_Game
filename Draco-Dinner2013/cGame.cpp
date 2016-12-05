@@ -48,10 +48,13 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	theTextureMgr->setRenderer(theRenderer);
 	theFontMgr->initFontLib();
 	theSoundMgr->initMixer();
+
+	//Initially setting the score to 0
 	score = 0;
+	//Setting the Area clicked to 0,0 when the game first plays
 	theAreaClicked = { 0, 0 };
 
-	// Set filename
+	// Find the correct file
 	theFile.setFileName("Data/newHighScore.dat");
 	// Check file is available
 	if (!theFile.openFile(ios::in)) //open file for input output
@@ -64,7 +67,6 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		theFile.closeFile();
 	}
 	
-
 	// Store the textures
 	textureName = { "meat1", "meat2", "veg1", "veg2", "Egg", "theDragon", "theBackground", "left_buttonsprite", "right_buttonsprite" };
 	texturesToUse = { "Images\\Steak Sprite.png", "Images\\Chicken Sprite.png", "Images\\Carrot Sprite.png", "Images\\Broccoli Sprite.png", "Images\\Egg Sprite.png", "Images\\Dragon Sprite.png", "Images\\backgroundImage.png", "Images\\computer_key_Arrow_Left.png", "Images\\computer_key_Arrow_Right.png" };
@@ -72,10 +74,8 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	{
 		theTextureMgr->addTexture(textureName[tCount], texturesToUse[tCount]);
 	}
-    score = 0;
-	/*scoreStr = gameTextList[1] + to_string(score);*/
 
-	// Create textures for Game Dialogue (text)
+	// Store the textures for the Game Dialogue (text)
 	fontList = { "fantasy1", "fantasy2","fantasy1_small","Hazel" };
 	fontsToUse = { "Fonts/Wizards Magic.ttf", "Fonts/A Gothique Time .ttf" ,"Fonts/hazel grace.ttf"};
 
@@ -86,7 +86,7 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	
 	gameTextList = { "Draco Dinner", "Score : ", "Menu", "Use the arrow keys to move you dragon left and right to collect the food falling from the sky!", "Dont let the food reach the ground or its game over!", "Instructions", "Game Over", "Do you want to save your score?", "Score Table", "Your score has been saved" };
 
-	//Assigning Fonts to the Desired text
+	//Assigning different Fonts to the Desired text
 	theTextureMgr->addTexture("Title", theFontMgr->getFont("fantasy2")->createTextTexture(theRenderer, gameTextList[0], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("Score", theFontMgr->getFont("Hazel")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("Menu Title", theFontMgr->getFont("fantasy1")->createTextTexture(theRenderer, gameTextList[2], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
@@ -101,7 +101,6 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	// Store the Buttons
 	btnNameList = { "exit_btn", "instructions_btn", "load_btn", "menu_btn", "play_btn", "save_btn", "High_score_btn" };
 	btnTexturesToUse = { "Images/Buttons/button_exit.png", "Images/Buttons/button_instructions.png", "Images/Buttons/button_load.png", "Images/Buttons/button_menu.png", "Images/Buttons/button_play.png", "Images/Buttons/button_save.png", "Images/Buttons/high_score.png" };
-	/*btnPos = { { 400, 375 }, { 400, 300 }, { 400, 300 }, { 500, 500 }, { 400, 300 }, { 740, 500 }, { 400, 300 } };*/
 	for (int bCount = 0; bCount < btnNameList.size(); bCount++)
 	{
 		theTextureMgr->addTexture(btnNameList[bCount], btnTexturesToUse[bCount]);
@@ -110,11 +109,12 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	{
 		cButton * newBtn = new cButton();
 		newBtn->setTexture(theTextureMgr->getTexture(btnNameList[bCount]));
-		/*newBtn->setSpritePos(btnPos[bCount]);*/
 		newBtn->setSpriteDimensions(theTextureMgr->getTexture(btnNameList[bCount])->getTWidth(), theTextureMgr->getTexture(btnNameList[bCount])->getTHeight());
 		theButtonMgr->add(btnNameList[bCount], newBtn);
 	}
+	//setting the initial gamestate
 	theGameState = MENU;
+	//setting the initial buttontype
 	theBtnType = EXIT;
 
 	// Load game sounds
@@ -139,7 +139,7 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	theDragon.setDragonVelocity({ 0, 0 });
 	
 
-	// Seed the Random number generator for when it is used later
+	// Seed the Random number generator
 	srand( time(NULL));
 	
 }
@@ -165,6 +165,7 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	SDL_RenderClear(theRenderer);
 	switch (theGameState)
 	{
+		//Rendering everything in the Main Menu Scene
 	case MENU:
 	{
 		//render the background
@@ -188,7 +189,6 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		FPoint eggScale = { 1, 1 };
 		tempEgg->renderTexture(theRenderer, tempEgg->getTexture(), &tempEgg->getTextureRect(), &eggPos, eggScale);
 
-
 		// Render Buttons
 		theButtonMgr->getBtn("play_btn")->render(theRenderer, &theButtonMgr->getBtn("play_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("play_btn")->getSpritePos(), theButtonMgr->getBtn("play_btn")->getSpriteScale());
 		theButtonMgr->getBtn("play_btn")->setSpritePos({ 450, 200 });
@@ -201,6 +201,7 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	}
 	break;
 
+	//Rendering everything in the Instructions Scene
 	case INSTRUCTIONS:
 	{
 		//render the background
@@ -211,6 +212,7 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		SDL_Rect pos = { 20, 20, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
 		FPoint scale = { 1, 1 };
 		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
+
 		//Render the intruction Title
 		cTexture* tempTextTexture4 = theTextureMgr->getTexture("Instructions_title");
 		SDL_Rect pos4 = { 20, 120, tempTextTexture4->getTextureRect().w, tempTextTexture4->getTextureRect().h };
@@ -246,11 +248,10 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		theButtonMgr->getBtn("play_btn")->setSpritePos({ 450, 200 });
 		theButtonMgr->getBtn("menu_btn")->setSpritePos({ 450, 550});
 		theButtonMgr->getBtn("menu_btn")->render(theRenderer, &theButtonMgr->getBtn("menu_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("menu_btn")->getSpritePos(), theButtonMgr->getBtn("menu_btn")->getSpriteScale());
-
-
 	}
 	break;
 
+	//Rendering everything in the Score Table Scene
 	case HIGHSCORE:
 	{
 		//render the background
@@ -292,6 +293,7 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	}
 	break;
 
+	//Rendering Eveything in the main game Scene
 	case PLAYING:
 	{
 		spriteBkgd.render(theRenderer, NULL, NULL, spriteBkgd.getSpriteScale());
@@ -320,6 +322,7 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	}
 	break;
 
+	//rendering everything in the Game Over Scene
 	case LOSE:
 	{
 		//Render the Background
@@ -360,6 +363,7 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	}
 	break;
 
+	//stopping the render when gamestate = quit
 	case QUIT:
 	{
 		loop = false;
@@ -387,8 +391,7 @@ void cGame::update(double deltaTime)
 	switch (theGameState)
 	{
 	case MENU:
-		// Check Button clicked and change state
-		/*if (theGameState == MENU || theGameState == LOSE)*/
+		// Check Button clicked and change state if the buttons are in the menu state
 		{
 			theGameState = theButtonMgr->getBtn("exit_btn")->update(theGameState, QUIT, theAreaClicked);
 			theGameState = theButtonMgr->getBtn("play_btn")->update(theGameState, RESTARTING, theAreaClicked);
@@ -399,6 +402,7 @@ void cGame::update(double deltaTime)
 
 	case INSTRUCTIONS:
 	{
+		//checking the buttons clicked in the instruction gamestate
 		theGameState = theButtonMgr->getBtn("play_btn")->update(theGameState, RESTARTING, theAreaClicked);
 		theGameState = theButtonMgr->getBtn("menu_btn")->update(theGameState, MENU, theAreaClicked);
 	}
@@ -427,7 +431,6 @@ void cGame::update(double deltaTime)
 			| Check for collisions
 			==============================================================
 			*/
-			//(*collectableIterartor)->update(deltaTime);
 			for (vector<cCollectable*>::iterator collectableIterator = theCollectables.begin(); collectableIterator != theCollectables.end(); ++collectableIterator)
 			{
 				if ((*collectableIterator)->collidedWith(&(*collectableIterator)->getBoundingRect(), &theDragon.getBoundingRect()))
@@ -457,6 +460,7 @@ void cGame::update(double deltaTime)
 
 	case LOSE:
 		{
+			//checking the buttons clicked in the lose menu
 			theGameState = theButtonMgr->getBtn("menu_btn")->update(theGameState, MENU, theAreaClicked);
 			theGameState = theButtonMgr->getBtn("exit_btn")->update(theGameState, QUIT, theAreaClicked);
 			theGameState = theButtonMgr->getBtn("save_btn")->update(theGameState, SAVESCORE, theAreaClicked);
@@ -464,19 +468,27 @@ void cGame::update(double deltaTime)
 		}
 		break;
 
+// temporary gamestate that resets variables
 	case RESTARTING:
 	{
+		// resets the area clicked
 		theAreaClicked = { 0, 0 };
+
+		//deletes the old score and replaces it with O
+		theTextureMgr->deleteTexture("Score");
 		score = 0;
 		scoreStr = gameTextList[1] + to_string(score);
-		theTextureMgr->deleteTexture("Score");
+
+		//resets the dragons position 
 		theDragon.setSpritePos({ 370, 500 });
 
+		//resets the collectables by deleating the old ones if there are more than 0
 		if (theCollectables.size() > 0)
 		{
 			theCollectables.clear();
 		}
 
+		//and reinitialising them for the renderer to render
 		srand(time(NULL));
 		int randomInt;
 		for (int food = 0; food < 2; food++)
@@ -491,39 +503,46 @@ void cGame::update(double deltaTime)
 			theCollectables[food]->setCollectableVelocity({ 3.0f, 3.0f });
 			theCollectables[food]->setActive(true);
 		}
-
+		//after resetting the variables it immediately takes you back into the play gamestate
 		theGameState = PLAYING;
 	}
 	break;
 
+	//temporary gamestate while score is saved to file
 	case SAVESCORE:
 	{
+		//opens the file
 		if (!theFile.openFile(ios::app))
 			{
 				cout << "Could not open specified file '" << theFile.getFileName() << "'. Error " << SDL_GetError() << endl;
 			}
 			else
 			{
+				//writes the score to the file then resets area clicked and takes you back to the lose menu
 				theFile.writeDataToFile(scoreStr + "   \n");
 				theFile.closeFile();
-				theGameState = LOSE;
 				theAreaClicked = { 0, 0 };
+				theGameState = LOSE;
 			}
 	}
 	break;
 
 	case HIGHSCORE:
 	{
+		//checking the buttons clicked
 		theGameState = theButtonMgr->getBtn("menu_btn")->update(theGameState, MENU, theAreaClicked);
+		//opening the file to read data from it
 		if (!theFile.openFile(ios::in))
 		{
 			cout << "Could not open specified file '" << theFile.getFileName() << "'. Error " << SDL_GetError() << endl;
 		}
 		else
+		//sets the highscore string to the data in the file
 		{
 			highScore = theFile.readDataFromFile();
 			theFile.closeFile();
 		}
+		//deletes the old highscore texture in place of the new one
 		theTextureMgr->deleteTexture("Highscore");
 	}
 	break;
@@ -550,6 +569,7 @@ bool cGame::getInput(bool theLoop)
 
 		switch (event.type)
 		{
+			//tracks where the mouse button is clicked
 		case SDL_MOUSEBUTTONDOWN:
 			switch (event.button.button)
 			{
@@ -564,7 +584,7 @@ bool cGame::getInput(bool theLoop)
 			}
 			break;
 	
-
+			//quits the game if the esc key is pressed
 		case SDL_KEYDOWN:
 			switch (event.key.keysym.sym)
 			{
@@ -575,9 +595,10 @@ bool cGame::getInput(bool theLoop)
 			}
 			break;
 		
-
+			// moves the dragon right if the right key is pressed
 			case SDLK_RIGHT:
 			{
+				//sets the boundaries
 				if (theDragon.getSpritePos().x < (renderWidth - (theDragon.getSpritePos().w + 40)))
 				{
 					theDragon.setDragonVelocity({ 260.0, 0.0 });
@@ -585,8 +606,10 @@ bool cGame::getInput(bool theLoop)
 			}
 			break;
 
+			// moves the dragon left if the left key is pressed
 			case SDLK_LEFT:
 			{
+				//sets the boundaries
 				if (theDragon.getSpritePos().x > 0)
 				{
 					theDragon.setDragonVelocity({ -200.0, 0.0 });

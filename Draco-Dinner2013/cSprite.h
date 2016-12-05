@@ -59,13 +59,9 @@ public:
 	void setSpriteTranslation(SDL_Point spriteTrans);   // Sets the translation for the sprite
 	SDL_Point getSpriteTranslation();				 // Gets the sprite translation
 	bool SphereSphereCollision(SDL_Point spritePosition, float spriteRadius);
-
-	//Pixel by pixel Collision detection
 	bool collidedWith(SDL_Rect* thisSprite, SDL_Rect* otherSpritePos); //check for collisions
-	/*SDL_Rect NormaliseBounds(const SDL_Rect & rect); *///finding the pixel bounds
-	SDL_Rect intersection(const SDL_Rect dimentionsA, const SDL_Rect dimentionsB); // get sprite overlap
-	bool getAlphaMap(SDL_Rect* thisSprite, int x, int y);  
-	SDL_Surface* surface;
+	
+	
 
 	
 };
