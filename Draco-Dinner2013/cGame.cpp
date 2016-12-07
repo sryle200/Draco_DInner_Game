@@ -435,11 +435,11 @@ void cGame::update(double deltaTime)
 			{
 				if ((*collectableIterator)->collidedWith(&(*collectableIterator)->getBoundingRect(), &theDragon.getBoundingRect()))
 				{
-					// if a collision is detected reset the collectables position and plays a sound
+					// if a collision is detected reset the collectables position and plays the bite sound
 					(*collectableIterator)->setSpritePos({ rand() % 1000, 40 });
 					theSoundMgr->getSnd("bite")->play(0);
 
-					//the old score is deleted and gets replaced by the new one in the vector.
+					//the old score is deleted and gets replaced by the new one.
 					score += 10;
 					scoreStr = gameTextList[1] + to_string(score);
 					theTextureMgr->deleteTexture("Score");
@@ -488,7 +488,7 @@ void cGame::update(double deltaTime)
 			theCollectables.clear();
 		}
 
-		//initialising them for the renderer to render
+		//initialising the new collectables for the renderer to render
 		srand(time(NULL));
 		int randomInt;
 		for (int food = 0; food < 2; food++)
