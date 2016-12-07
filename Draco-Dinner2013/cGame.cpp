@@ -435,7 +435,7 @@ void cGame::update(double deltaTime)
 			{
 				if ((*collectableIterator)->collidedWith(&(*collectableIterator)->getBoundingRect(), &theDragon.getBoundingRect()))
 				{
-					// if a collision is detected reset the collectables position
+					// if a collision is detected reset the collectables position and plays a sound
 					(*collectableIterator)->setSpritePos({ rand() % 1000, 40 });
 					theSoundMgr->getSnd("bite")->play(0);
 
@@ -444,7 +444,7 @@ void cGame::update(double deltaTime)
 					scoreStr = gameTextList[1] + to_string(score);
 					theTextureMgr->deleteTexture("Score");
 				}
-				// if the collectable touches the floor the game ends
+				// if the collectable touches the floor the game ends and plays the death sound
 				if ((*collectableIterator)->getSpritePos().y >= 720)
 				{
 					(*collectableIterator)->setActive(false);
@@ -488,7 +488,7 @@ void cGame::update(double deltaTime)
 			theCollectables.clear();
 		}
 
-		//and reinitialising them for the renderer to render
+		//initialising them for the renderer to render
 		srand(time(NULL));
 		int randomInt;
 		for (int food = 0; food < 2; food++)

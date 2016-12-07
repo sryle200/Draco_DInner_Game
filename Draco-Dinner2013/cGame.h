@@ -79,7 +79,6 @@ private:
 	int score;
 	string scoreStr;
 	string highScore;
-	/*bool replay;*/
 	//Files to access
 	cFileHandler theFile;
 	bool fileAvailable;
